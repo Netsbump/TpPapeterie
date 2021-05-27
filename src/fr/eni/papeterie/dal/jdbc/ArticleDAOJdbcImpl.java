@@ -26,7 +26,7 @@ public class ArticleDAOJdbcImpl {
         try (Connection connection = DriverManager.getConnection(this.URL);
              PreparedStatement reqPreparee = connection.prepareStatement(SELECT_ALL))
         {
-            reqPreparee.executeQuery(SELECT_ALL);                                                        //Resulset sert à récupérer les données dans un select
+            reqPreparee.executeQuery(SELECT_ALL);
         }
         catch (SQLException e)   {
             System.out.println(e.getMessage());
@@ -95,7 +95,7 @@ public class ArticleDAOJdbcImpl {
         final String UPTADE = "UPDATE Articles SET reference=?, marque=?, designation=?, qteStock=?, prixUnitaire=?, grammage=?, couleur =?" +
                 "WHERE idArticle=?";
 
-        try (Connection connection = DriverManager.getConnection(this.URL);                                             //ds les parenthèse du try, les paramètres existent seulement à l'intérieur du try et et donc se ferment automatiquement à la fin du try
+        try (Connection connection = DriverManager.getConnection(this.URL);
              PreparedStatement reqPreparee = connection.prepareStatement(UPTADE))
         {
             if (article instanceof Stylo) {
