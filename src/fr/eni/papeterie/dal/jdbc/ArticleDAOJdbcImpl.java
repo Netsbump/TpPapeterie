@@ -15,18 +15,27 @@ import java.util.List;
 
 public class ArticleDAOJdbcImpl {
 
-    private final String URL ="jdbc:sqlite:identifier.sqlite";                                                          //Adresse de la base de donnée
+    private final String URL = Settings.getPropriete("url");                                                        //Adresse de la base de donnée
+
+    final String SQL_SELECT_ALL = "SELECT * FROM Articles";
+    final String SQL_UPDATE = "UPDATE Articles SET reference=?, marque=?, designation=?, prixUnitaire=?, qteStock=?, grammage=?, couleur =?" +
+            "WHERE idArticle=?";
+    final String SQL_INSERT = "INSERT INTO Articles " +
+            "(reference, marque, designation, prixUnitaire, qteStock, grammage, couleur, type) " +
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    final String SQL_DELETE = "DELETE FROM Articles WHERE idArticle =?";
+
 
 /**********************************************METHODE-SELECT-ALL******************************************************/
     public List<Article> selectAll(){
 
-        final String SELECT_ALL = "SELECT * FROM Articles";
         List<Article> articleList = new ArrayList<>();
 
-        try (Connection connection = DriverManager.getConnection(this.URL);
-             PreparedStatement reqPreparee = connection.prepareStatement(SELECT_ALL))
+        try (Connection connection = DriverManager.getConnection(this.URL))
         {
-            reqPreparee.executeQuery(SELECT_ALL);
+            PreparedStatement reqPreparee = connection.prepareStatement(this.SQL_SELECT_ALL);
+
+            reqPreparee.executeQuery();
         }
         catch (SQLException e)   {
             System.out.println(e.getMessage());
@@ -92,27 +101,24 @@ public class ArticleDAOJdbcImpl {
 /**********************************************METHODE-UPDATE**********************************************************/
     public void update(Article article){
 
-        final String UPTADE = "UPDATE Articles SET reference=?, marque=?, designation=?, qteStock=?, prixUnitaire=?, grammage=?, couleur =?" +
-                "WHERE idArticle=?";
-
-        try (Connection connection = DriverManager.getConnection(this.URL);
-             PreparedStatement reqPreparee = connection.prepareStatement(UPTADE))
+        try (Connection connection = DriverManager.getConnection(this.URL))
         {
+            PreparedStatement reqPreparee = connection.prepareStatement(this.SQL_UPDATE);
+
             if (article instanceof Stylo) {
-                reqPreparee.setString(6, ((Stylo) article).getCouleur());
-                reqPreparee.setInt(8, article.getIdArticle());            //revoir cette ligne
+                reqPreparee.setString(7, ((Stylo) article).getCouleur());
             }
             if (article instanceof Ramette) {
-                reqPreparee.setInt(7, ((Ramette) article).getGrammage());
-                reqPreparee.setInt(8, article.getIdArticle());            //idem revoir cette ligne
+                reqPreparee.setInt(6, ((Ramette) article).getGrammage());
             }
             reqPreparee.setString(1, article.getReference());
             reqPreparee.setString(2, article.getMarque());
             reqPreparee.setString(3, article.getDesignation());
             reqPreparee.setFloat(4, article.getPrixUnitaire());
             reqPreparee.setInt(5, article.getQteStock());
+            reqPreparee.setInt(8, article.getIdArticle());
 
-            reqPreparee.executeUpdate(UPTADE);
+            reqPreparee.executeUpdate();
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -122,29 +128,33 @@ public class ArticleDAOJdbcImpl {
 /**********************************************METHODE-INSERT**********************************************************/
     public void insert(Article article){
 
-        final String INSERT = "INSERT INTO Articles VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        try (Connection connection = DriverManager.getConnection(this.URL))                                             //ds les parenthèse du try, les paramètres existent seulement à l'intérieur du try et et donc se ferment automatiquement à la fin du try
+        {                                                                                                               // cela s'appelle un try with ressources, ds ce cas précis cela ferme automatiquement la connection
+            PreparedStatement reqPreparee = connection.prepareStatement(this.SQL_INSERT);                               // pour recup l'index en sqlServer il faut ajouter (this.SQL_INSERT,Statement.RETURN_GENERATED_KEYS))
 
-        try (Connection connection = DriverManager.getConnection(this.URL);                                             //ds les parenthèse du try, les paramètres existent seulement à l'intérieur du try et et donc se ferment automatiquement à la fin du try
-             PreparedStatement reqPreparee = connection.prepareStatement(INSERT))                                       // cela s'appelle un try with ressources, ds ce cas précis cela ferme automatiquement la connection
-        {
             if (article instanceof Ramette){
-                reqPreparee.setInt(7, ((Ramette)article).getGrammage());
+                reqPreparee.setInt(6, ((Ramette)article).getGrammage());
+                reqPreparee.setString(8, "RAMETTE");
+                // en SQLServer il faut mettre null sur les valeurs non préparée : reqPreparee.setNull (7, Types.NULL);
             }
             if (article instanceof Stylo){
-                reqPreparee.setString(8, ((Stylo) article).getCouleur());
+                reqPreparee.setString(7, ((Stylo) article).getCouleur());
+                reqPreparee.setString(8, "STYLO");
+                // en SQLServer il faut mettre null sur les valeurs non préparée : reqPreparee.setNull (6, Types.NULL)
             }
-            reqPreparee.setString(2, article.getReference());
-            reqPreparee.setString(3, article.getMarque());
-            reqPreparee.setString(4, article.getDesignation());
-            reqPreparee.setFloat(5, article.getPrixUnitaire());
-            reqPreparee.setInt(6, article.getQteStock());
+            reqPreparee.setString(1, article.getReference());
+            reqPreparee.setString(2, article.getMarque());
+            reqPreparee.setString(3, article.getDesignation());
+            reqPreparee.setFloat(4, article.getPrixUnitaire());
+            reqPreparee.setInt(5, article.getQteStock());
 
-            reqPreparee.executeUpdate(INSERT);                                                                          // pour recup l'index en sqlServer il faut ajouter (sql,Statement.RETURN_GENERATED_KEYS))
+            reqPreparee.executeUpdate();
 
-            ResultSet rs = reqPreparee.getGeneratedKeys();
+            ResultSet rs = reqPreparee.getGeneratedKeys();                                                              //retourne automatiquement un resultset
             if(rs.next()) {
                 int id = rs.getInt(1);                                                                       //pour recupérer idKey généré par la base
                 article.setIdArticle(id);
+                // idem deux autres lignes au dessus : article.setIdArticle(rs.getInt(1));
             }
         }
         catch (SQLException e) {
@@ -153,15 +163,13 @@ public class ArticleDAOJdbcImpl {
     }
 
 /**********************************************METHODE-DELETE**********************************************************/
-    public void delete(Article article){
+    public void delete(int id){
 
-        final String DELETE_FROM = "DELETE FROM Articles WHERE idArticle =?;";
-
-        try(Connection connection = DriverManager.getConnection(this.URL);
-            PreparedStatement reqPreparee = connection.prepareStatement(DELETE_FROM))
+        try (Connection connection = DriverManager.getConnection(this.URL))
         {
-            reqPreparee.setInt(1, article.getIdArticle());
-            reqPreparee.executeQuery(DELETE_FROM);
+            PreparedStatement reqPreparee = connection.prepareStatement(this.SQL_DELETE);
+            reqPreparee.setInt(1, id);
+            reqPreparee.executeUpdate();
         }
         catch (SQLException e) {
             System.out.println(e.getMessage());
