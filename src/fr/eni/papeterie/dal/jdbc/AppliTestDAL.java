@@ -1,13 +1,10 @@
 package fr.eni.papeterie.dal.jdbc;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
-
 import fr.eni.papeterie.bo.Article;
 import fr.eni.papeterie.bo.Ramette;
 import fr.eni.papeterie.bo.Stylo;
+
+import java.util.List;
 
 
 public class AppliTestDAL {
@@ -15,7 +12,7 @@ public class AppliTestDAL {
 	public static void main(String[] args) {
 
 		//Déclaration et instanciation de la DAO
-		ArticleDAOJdbcImpl articleDAO = new ArticleDAOJdbcImpl();
+		ArticleDAO articleDAO = DAOFactory.getArticleDAO();
 
 		//Instanciation du jeu d'essai
 		Article a1 = new Stylo( "Bic", "BBOrange","Bic bille Orange", 1.2f, 20, "bleu");
