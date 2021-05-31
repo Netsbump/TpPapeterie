@@ -18,11 +18,8 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
     final String SQL_SELECT_ALL = "SELECT * FROM Articles";
     final String SQL_UPDATE = "UPDATE Articles SET reference=?, marque=?, designation=?, prixUnitaire=?, qteStock=?, grammage=?, couleur =?" +
             "WHERE idArticle=?";
-    final String SQL_INSERT = "INSERT INTO Articles " +
-            "(reference, marque, prixUnitaire, designation, qteStock, grammage, couleur, type) " +
-            " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    final String SELECT_BY_ID = "SELECT (idArticle, reference, marque, designation, prixUnitaire, qteStock, grammage, couleur)" +
-            " FROM Articles WHERE idArticle=?";
+    final String SQL_INSERT = "INSERT INTO Articles(reference, marque, prixUnitaire, designation, qteStock, grammage, couleur, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    final String SELECT_BY_ID = "SELECT * FROM Articles WHERE idArticle=?";
     final String SQL_DELETE = "DELETE FROM Articles WHERE idArticle =?";
 
 
@@ -55,12 +52,29 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
             PreparedStatement reqPreparee = connection.prepareStatement(this.SELECT_BY_ID);
 
             reqPreparee.setInt(1, id);
+            ResultSet resultSet = reqPreparee.executeQuery();
 
-            if(article instanceof Ramette){
-                article = new Ramette(reqPreparee.setInt(7, (((Ramette) article).getGrammage());
+            if(resultSet.getString("type").equalsIgnoreCase("stylo"))
+            {
+                article = new Stylo(
+                        resultSet.getInt("idArticle"),
+                        resultSet.getString("reference"),
+                        resultSet.getString("marque"),
+                        resultSet.getString("designation"),
+                        resultSet.getFloat("prixUnitaire"),
+                        resultSet.getInt("qteStock"),
+                        resultSet.getString("couleur"));
             }
-            if(article instanceof Stylo){
-                article = new Stylo(reqPreparee.setInt(8, (((Stylo) article).getCouleur());
+            if(resultSet.getString("type").equalsIgnoreCase("ramette"))
+            {
+                article = new Stylo(
+                        resultSet.getInt("idArticle"),
+                        resultSet.getString("reference"),
+                        resultSet.getString("marque"),
+                        resultSet.getString("designation"),
+                        resultSet.getFloat("prixUnitaire"),
+                        resultSet.getInt("qteStock"),
+                        resultSet.getInt("grammage"));
             }
 
             reqPreparee.executeQuery();
