@@ -9,5 +9,5 @@ public interface ArticleDAO {
     void update(Article article);
     void insert(Article article);
     Article selectById(int id);
-    void delete(int id) throws DALException;
+    void delete(int id);
 }

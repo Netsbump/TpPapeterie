@@ -23,7 +23,7 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
     final String SQL_DELETE = "DELETE FROM Articles WHERE idArticle =?";
 
 
-    /**********************************************METHODE-SELECT-ALL******************************************************/
+/**********************************************METHODE-SELECT-ALL******************************************************/
     @Override
     public List<Article> selectAll(){
 
@@ -41,7 +41,7 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
         return articleList;
     }
 
-    /**********************************************METHODE-SELECT-BY-ID****************************************************/
+/**********************************************METHODE-SELECT-BY-ID****************************************************/
     @Override
     public Article selectById(int id){
 
@@ -67,7 +67,7 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
             }
             if(resultSet.getString("type").equalsIgnoreCase("ramette"))
             {
-                article = new Ramette(
+                article = new Stylo(
                         resultSet.getInt("idArticle"),
                         resultSet.getString("reference"),
                         resultSet.getString("marque"),
@@ -85,8 +85,8 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
         return article;
     }
 
-    /**********************************************METHODE-UPDATE**********************************************************/
-    @Override
+/**********************************************METHODE-UPDATE**********************************************************/
+   @Override
     public void update(Article article){
 
         try (Connection connection = JdbcTools.recupConnection())
@@ -113,7 +113,7 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
         }
     }
 
-    /**********************************************METHODE-INSERT**********************************************************/
+/**********************************************METHODE-INSERT**********************************************************/
     @Override
     public void insert(Article article){
 
@@ -152,9 +152,9 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 
     }
 
-    /**********************************************METHODE-DELETE**********************************************************/
-    @Override
-    public void delete(int id) throws DALException {
+/**********************************************METHODE-DELETE**********************************************************/
+   @Override
+    public void delete(int id){
 
         try (Connection connection = JdbcTools.recupConnection())
         {
@@ -163,7 +163,7 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
             reqPreparee.executeUpdate();
         }
         catch (SQLException e) {
-            throw new DALException("Erreur dans la méthode delete().");
+            System.out.println(e.getMessage());
         }
     }
 
