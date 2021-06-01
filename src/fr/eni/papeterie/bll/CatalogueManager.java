@@ -52,11 +52,7 @@ public class CatalogueManager {
 
 /****************************************METHODE-SUPPRIMER-ARTICLE*****************************************************/
     public void removeArticle(int index) throws BLLException{
-        try {
-            this.articleDAO.delete(index);
-        } catch (DALException e) {
-            throw new BLLException("Erreur dans la BLL.");
-        }
+        this.articleDAO.delete(index);
     }
 
 /****************************************METHODE-VALIDER-ARTICLE*******************************************************/

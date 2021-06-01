@@ -67,7 +67,7 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
             }
             if(resultSet.getString("type").equalsIgnoreCase("ramette"))
             {
-                article = new Stylo(
+                article = new Ramette(
                         resultSet.getInt("idArticle"),
                         resultSet.getString("reference"),
                         resultSet.getString("marque"),
