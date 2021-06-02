@@ -8,10 +8,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/***********************************************************************************************************************
- ****************************** CLASSE DES METHODES SQL DE LA TABLE ARTICLES *******************************************
- **********************************************************************************************************************/
-
+/**
+ * CLASSE ARTICLEDAOIMPL QUI DEFINI LES REQUETES SQL DE LA TABLE ARTICLES (BDD)
+ */
 
 public class ArticleDAOJdbcImpl implements ArticleDAO {
 

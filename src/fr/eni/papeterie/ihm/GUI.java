@@ -1,41 +1,33 @@
 package fr.eni.papeterie.ihm;
 
-import javax.imageio.ImageIO;
+import fr.eni.papeterie.bll.BLLException;
+import fr.eni.papeterie.bll.CatalogueManager;
+import fr.eni.papeterie.bo.Article;
+import fr.eni.papeterie.bo.Couleur;
+import fr.eni.papeterie.bo.Ramette;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+
+/**
+ * CLASSE GUI IHM
+ */
+
+/***************************************ATTRIBUTS-DE-CLASSES-ET-D-INSTANCE*********************************************/
 public class GUI extends JFrame {
-    private JPanel panneauPrincipal;
-    private JPanel panneauRadio;
-    private JPanel panneauCheckBox;
-    private JPanel panneauBoutons;
 
-    private JButton boutonPrecedent;
-    private JButton boutonSuivant;
-    private JButton boutonValider;
-    private JButton boutonDelete;
-    private JButton boutonSave;
-
-
-    private JLabel labelReference;
-    private JLabel labelDesignation;
-    private JLabel labelMarque;
-    private JLabel labelStock;
-    private JLabel labelPrix;
-    private JLabel labelType;
-    private JLabel labelGrammage;
-    private JLabel labelCouleur;
-    private JTextField textReference;
-    private JTextField textMarque;
-    private JTextField textDesignation;
-    private JTextField textStock;
-    private JTextField textPrix;
-    private JRadioButton radioRamette;
-    private JRadioButton radioStylo;
-    private JCheckBox checkbox80;
-    private JCheckBox checkbox100;
+    private JPanel panneauPrincipal, panneauRadio, panneauCheckBox, panneauBoutons;
+    private JButton boutonPrecedent, boutonSuivant, boutonValider, boutonDelete, boutonSave;
+    private JLabel labelReference, labelDesignation, labelMarque, labelStock, labelPrix, labelType, labelGrammage, labelCouleur;
+    private JTextField textReference, textMarque, textDesignation, textStock, textPrix;
+    private JRadioButton radioRamette, radioStylo;
+    private JCheckBox checkbox80, checkbox100;
     private JComboBox comboCouleur;
 
+/********************************************CREATION-JFRAME***********************************************************/
     public GUI(){
         this.setTitle("The Office");
         this.setSize(300,300);
@@ -47,8 +39,7 @@ public class GUI extends JFrame {
         this.setVisible(true);
     }
 
-
-
+/********************************************CREATION-JPANEL-PRINCIPAL*************************************************/
     public JPanel getPanneauPrincipal() {
         if (panneauPrincipal == null) {
             panneauPrincipal = new JPanel(); // Je crée le panneau principal
@@ -63,7 +54,7 @@ public class GUI extends JFrame {
 
             gbc.gridx = 0;
             gbc.gridy = 1;
-            panneauPrincipal.add(getLabelDesignation(), gbc); //J'aoujoute le bouton2 au panneau principal
+            panneauPrincipal.add(getLabelDesignation(), gbc); //J'ajoute le bouton2 au panneau principal
 
             gbc.gridx = 0;
             gbc.gridy = 2;
@@ -86,7 +77,7 @@ public class GUI extends JFrame {
             gbc.gridy = 6;
             panneauPrincipal.add(getLabelGrammage(), gbc);
 
-            gbc.gridheight = 2;
+            gbc.gridheight = 1;
             gbc.gridx = 0;
             gbc.gridy = 7;
             panneauPrincipal.add(getLabelCouleur(), gbc);
@@ -126,11 +117,17 @@ public class GUI extends JFrame {
             gbc.gridy = 7;
             panneauPrincipal.add(getcomboCouleur(), gbc);
 
+            CatalogueManager cm = CatalogueManager.getInstance();
+            getTextDesignation(cm.getArticle(1));
+
         }
         return panneauPrincipal;
     }
 
-    public JPanel getPanneauRadio() {
+/*****************************************CREATION-JPANEL-SUPPLEMENTAIRES**********************************************/
+
+/************************************************PANEL-PANNEAU-RADIO***************************************************/
+        public JPanel getPanneauRadio() {
         if (panneauRadio == null) {
             panneauRadio = new JPanel();
             panneauRadio.setLayout(new GridLayout(2,1));
@@ -143,6 +140,7 @@ public class GUI extends JFrame {
         return panneauRadio;
     }
 
+/************************************************PANEL-PANNEAU-CHECKBOX************************************************/
     public JPanel getPanneauCheckBox(){
         if(panneauCheckBox == null){
             panneauCheckBox = new JPanel();
@@ -156,6 +154,7 @@ public class GUI extends JFrame {
         return panneauCheckBox;
     }
 
+/************************************************PANEL-PANNEAU-BOUTONS*************************************************/
     public JPanel getPanneauBoutons(){
         if(panneauBoutons == null){
             panneauBoutons = new JPanel();
@@ -169,10 +168,7 @@ public class GUI extends JFrame {
         return panneauBoutons;
     }
 
-
-
-
-    /******************************************************SINGLETON*******************************************************/
+/******************************************************SINGLETON*******************************************************/
     public JButton getPrecedent() {
         if (boutonPrecedent==null) {
             ImageIcon icon = new ImageIcon("Image/Back24.gif");
@@ -185,6 +181,14 @@ public class GUI extends JFrame {
         if (boutonSuivant==null) {
             Icon icon = new ImageIcon("Image/Forward24.gif");
             boutonSuivant = new JButton(icon);
+            boutonSuivant.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    CatalogueManager cm = CatalogueManager.getInstance();
+                    Article article = new Ramette();
+                    cm.getArticle(article.getIdArticle());
+                }
+            });
         }
         return boutonSuivant;
     }
@@ -201,6 +205,16 @@ public class GUI extends JFrame {
         if (boutonValider==null) {
             Icon icon = new ImageIcon("Image/New24.gif");
             boutonValider = new JButton(icon);
+            boutonValider.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    getTextReference().setText("");
+                    getTextDesignation().setText("");
+                    getTextMarque().setText("");
+                    getTextStock().setText("");
+                    getTextPrix().setText("");
+                }
+            });
         }
         return boutonValider;
     }
@@ -209,6 +223,24 @@ public class GUI extends JFrame {
         if (boutonSave==null) {
             Icon icon = new ImageIcon("Image/Save24.gif");
             boutonSave = new JButton(icon);
+            boutonSave.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        CatalogueManager cm = CatalogueManager.getInstance();
+                        Article article = new Ramette();
+                        article.setDesignation(getTextDesignation().getText());
+                        article.setReference(getTextReference().getText());
+                        article.setMarque(getTextMarque().getText());
+                        article.setQteStock(Integer.parseInt(getTextStock().getText()));
+                        article.setPrixUnitaire(Float.parseFloat(getTextPrix().getText()));
+                        cm.addArticle(article);
+                    } catch (BLLException bllException) {
+                        bllException.printStackTrace();
+                    }
+
+                }
+            });
         }
         return boutonSave;
     }
@@ -308,6 +340,13 @@ public class GUI extends JFrame {
     public JRadioButton getRadioRamette(){
         if(radioRamette == null) {
             radioRamette = new JRadioButton("Ramette");
+            radioRamette.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    getcomboCouleur().setEnabled(false);
+                    getCheckbox80().doClick();
+                }
+            });
         }
         return radioRamette;
     }
@@ -337,8 +376,7 @@ public class GUI extends JFrame {
 
     public JComboBox getcomboCouleur(){
         if (comboCouleur == null) {
-            comboCouleur = new JComboBox();
-
+            comboCouleur = new JComboBox<Couleur>(Couleur.values());
         }
         return comboCouleur;
     }

@@ -1,5 +1,10 @@
 package fr.eni.papeterie.bo;
 
+/**
+ * CLASSE ARTICLE
+ */
+
+/***************************************ATTRIBUTS-DE-CLASSES-ET-D-INSTANCE*********************************************/
 public abstract class Article {
     private int idArticle;
     private String reference;
@@ -8,6 +13,7 @@ public abstract class Article {
     private float prixUnitaire;
     private int qteStock;
 
+/*************************************************CONSTRUCTEURS********************************************************/
     public Article(){};
     public Article(int idArticle, String reference, String marque, String designation, float prixUnitaire, int qteStock) {
         this.idArticle = idArticle;
@@ -26,7 +32,7 @@ public abstract class Article {
         this.qteStock = qteStock;
     }
 
-
+/***********************************************GETTERS/SETTERS********************************************************/
     public int getIdArticle() {
         return idArticle;
     }
@@ -75,6 +81,7 @@ public abstract class Article {
         this.qteStock = qteStock;
     }
 
+/*********************************************SURCHARGE-TO-STRING******************************************************/
     @Override
     public String toString() {
         return "Article{" +

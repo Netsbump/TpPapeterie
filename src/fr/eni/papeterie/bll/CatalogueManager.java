@@ -12,6 +12,9 @@ import fr.eni.papeterie.dal.jdbc.DALException;
 import java.util.InputMismatchException;
 import java.util.List;
 
+/**
+ * CLASSE CATALOGUEMANAGER POUR APPELER LES METHODES DE ARTICLEDAO (JDBC) VIA DAOFACTORY (DAL)
+ */
 
 public class CatalogueManager {
 

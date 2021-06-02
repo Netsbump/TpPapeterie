@@ -1,16 +1,21 @@
 package fr.eni.papeterie.bo;
 
+/**
+ * CLASSE LIGNE
+ */
+
+/**************************************ATTRIBUTS-DE-CLASSES-ET-D-INSTANCE**********************************************/
 public class Ligne {
-    //Attribut
     protected int qte;
     private Article article; //association unidirectionelle
-    //Constructeurs
+
+/*************************************************CONSTRUCTEURS********************************************************/
     public Ligne(int qte, Article article) {
         this.qte = qte;
         this.article = article;
     }
 
-    //Getters et Setters
+/***********************************************GETTERS/SETTERS********************************************************/
     public int getQte() {
         return qte;
     }
@@ -32,7 +37,7 @@ public class Ligne {
         this.article = article;
     }
 
-    //Méthodes
+/*********************************************SURCHARGE-TO-STRING******************************************************/
     @Override
     public String toString() {
         return "Ligne{" +

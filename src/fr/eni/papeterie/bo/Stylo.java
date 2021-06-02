@@ -1,9 +1,15 @@
 package fr.eni.papeterie.bo;
 
+/**
+ * CLASSE STYLO
+ */
+
+/**************************************ATTRIBUTS-DE-CLASSES-ET-D-INSTANCE**********************************************/
 public class Stylo extends Article {
 
     private String couleur;
 
+/*************************************************CONSTRUCTEURS********************************************************/
     public Stylo () {};
 
     public Stylo(int idArticle, String reference, String marque, String designation, float prixUnitaire, int qteStock, String couleur) {
@@ -16,6 +22,7 @@ public class Stylo extends Article {
         this.couleur = couleur;
     }
 
+/***********************************************GETTERS/SETTERS********************************************************/
     public String getCouleur() {
         return couleur;
     }
@@ -24,6 +31,7 @@ public class Stylo extends Article {
         this.couleur = couleur;
     }
 
+/*********************************************SURCHARGE-TO-STRING******************************************************/
     @Override
     public String toString() {
         return "Stylo{" +

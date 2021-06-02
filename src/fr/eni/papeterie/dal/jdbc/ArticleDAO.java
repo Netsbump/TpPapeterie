@@ -4,6 +4,10 @@ import fr.eni.papeterie.bo.Article;
 
 import java.util.List;
 
+/**
+ * INTERFACE ARTICLEDAO DONT DEPEND ARTICLEDAOIMPL
+ */
+
 public interface ArticleDAO {
     List<Article> selectAll();
     void update(Article article);

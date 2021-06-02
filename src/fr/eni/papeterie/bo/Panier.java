@@ -3,20 +3,26 @@ package fr.eni.papeterie.bo;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * CLASSE PANIER
+ */
+
+/**************************************ATTRIBUTS-DE-CLASSES-ET-D-INSTANCE**********************************************/
 public class Panier {
 
     private float montant;
     private List<Ligne> listeDeLignes;
 
+/*************************************************CONSTRUCTEURS********************************************************/
     public Panier() {
         this.listeDeLignes = new ArrayList<Ligne>();
     }
 
+/***********************************************METHODES***************************************************************/
     public float getMontant() {
         return montant;
     }
 
-    //Attention ce n'est pas un getter
     public Ligne getLigne(int index){
         return listeDeLignes.get(index);
     }
@@ -35,11 +41,12 @@ public class Panier {
         listeDeLignes.remove(index);
     }
 
-    //Getter
+/***********************************************GETTERS/SETTERS********************************************************/
     public List<Ligne> getListeDeLignes() {
         return listeDeLignes;
     }
 
+/*********************************************SURCHARGE-TO-STRING******************************************************/
     @Override
     public String toString() {
         return "Panier{" +

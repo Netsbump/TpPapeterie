@@ -2,6 +2,10 @@ package fr.eni.papeterie.dal.jdbc;
 
 import java.util.Properties;
 
+/**
+ * CLASSE SETTINGS POUR RECUPERER LE CONTENU DE SETTINGS.PROPERTIES (URL, LOGIN, MDP, ECT)
+ */
+
 public class Settings {
     private static Properties propriete;
 
