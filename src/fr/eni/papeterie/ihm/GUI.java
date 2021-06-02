@@ -53,8 +53,9 @@ public class GUI extends JFrame {
         if (panneauPrincipal == null) {
             panneauPrincipal = new JPanel(); // Je crée le panneau principal
             panneauPrincipal.setLayout(new GridBagLayout());
-            panneauPrincipal.setBackground(Color.ORANGE);
             GridBagConstraints gbc = new GridBagConstraints();
+            panneauPrincipal.setBackground(Color.ORANGE);
+
             //PREMIERE COLONNE DE PANNEAU PRINCIPAL
             gbc.gridx = 0;
             gbc.gridy = 0;
@@ -174,7 +175,7 @@ public class GUI extends JFrame {
     /******************************************************SINGLETON*******************************************************/
     public JButton getPrecedent() {
         if (boutonPrecedent==null) {
-            Icon icon = new ImageIcon("D:\\Back24.gif");
+            ImageIcon icon = new ImageIcon("Image/Back24.gif");
             boutonPrecedent = new JButton(icon);
         }
         return boutonPrecedent;
@@ -182,7 +183,7 @@ public class GUI extends JFrame {
 
     public JButton getSuivant() {
         if (boutonSuivant==null) {
-            Icon icon = new ImageIcon("D:\\Forward24.gif");
+            Icon icon = new ImageIcon("Image/Forward24.gif");
             boutonSuivant = new JButton(icon);
         }
         return boutonSuivant;
@@ -190,7 +191,7 @@ public class GUI extends JFrame {
 
     public JButton getDelete() {
         if (boutonDelete==null) {
-            Icon icon = new ImageIcon("D:\\Delete24.gif");
+            Icon icon = new ImageIcon("Image/Delete24.gif");
             boutonDelete = new JButton(icon);
         }
         return boutonDelete;
@@ -198,7 +199,7 @@ public class GUI extends JFrame {
 
     public JButton getValider() {
         if (boutonValider==null) {
-            Icon icon = new ImageIcon("D:\\New24.gif");
+            Icon icon = new ImageIcon("Image/New24.gif");
             boutonValider = new JButton(icon);
         }
         return boutonValider;
@@ -206,7 +207,7 @@ public class GUI extends JFrame {
 
     public JButton getSave() {
         if (boutonSave==null) {
-            Icon icon = new ImageIcon("D:\\Save24.gif");
+            Icon icon = new ImageIcon("Image/Save24.gif");
             boutonSave = new JButton(icon);
         }
         return boutonSave;
