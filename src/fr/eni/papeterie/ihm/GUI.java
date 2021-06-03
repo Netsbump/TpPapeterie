@@ -339,27 +339,28 @@ public class GUI extends JFrame {
             boutonSave.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+
+                    CatalogueManager cm = CatalogueManager.getInstance();
+                    Article article = null;
+                    if(getRadioRamette().isSelected())   {  // c'est une ramette
+                        article = new Ramette(
+                        getTextDesignation().getText(),
+                        getTextReference().getText(),
+                        getTextMarque().getText(),
+                        Float.parseFloat(getTextPrix().getText()),
+                        Integer.parseInt(getTextStock().getText()),
+                        (getCheckbox80().isSelected()?80:100));
+                    }
+                    if (getRadioStylo().isSelected()) { // c'est un stylo
+                        article = new Stylo(
+                        getTextDesignation().getText(),
+                        getTextReference().getText(),
+                        getTextMarque().getText(),
+                        Float.parseFloat(getTextPrix().getText()),
+                        Integer.parseInt(getTextStock().getText()),
+                        getcomboCouleur().getSelectedItem().toString());
+                    }
                     try {
-                        CatalogueManager cm = CatalogueManager.getInstance();
-                        Article article = null;
-                        if(getRadioRamette().isSelected())   {  // c'est une ramette
-                            article = new Ramette(
-                            getTextDesignation().getText(),
-                            getTextReference().getText(),
-                            getTextMarque().getText(),
-                            Float.parseFloat(getTextPrix().getText()),
-                            Integer.parseInt(getTextStock().getText()),
-                            (getCheckbox80().isSelected()?80:100));
-                        }
-                        if (getRadioStylo().isSelected()) { // c'est un stylo
-                            article = new Stylo(
-                            getTextDesignation().getText(),
-                            getTextReference().getText(),
-                            getTextMarque().getText(),
-                            Float.parseFloat(getTextPrix().getText()),
-                            Integer.parseInt(getTextStock().getText()),
-                            getcomboCouleur().getSelectedItem().toString());
-                        }
                         cm.addArticle(article);
                     } catch (BLLException bllException) {
                         bllException.printStackTrace();
