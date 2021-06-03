@@ -5,11 +5,15 @@ import fr.eni.papeterie.bll.CatalogueManager;
 import fr.eni.papeterie.bo.Article;
 import fr.eni.papeterie.bo.Couleur;
 import fr.eni.papeterie.bo.Ramette;
+import fr.eni.papeterie.bo.Stylo;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -27,6 +31,10 @@ public class GUI extends JFrame {
     private JCheckBox checkbox80, checkbox100;
     private JComboBox comboCouleur;
 
+    //Liste d'article pour afficher les articles stockés dans la BDD
+    List<Article> listeDarticles;
+    private int index = 0;
+
 /********************************************CREATION-JFRAME***********************************************************/
     public GUI(){
         this.setTitle("The Office");
@@ -37,6 +45,36 @@ public class GUI extends JFrame {
         this.setContentPane(getPanneauPrincipal()); // Je colle le panneau principal sur le support en bois
         this.pack(); // Permet que la fenetre s'adapte au contenu
         this.setVisible(true);
+        //Je remplis ma listeDarticles
+        listeDarticles = new ArrayList<>();
+        CatalogueManager cm = CatalogueManager.getInstance();
+        try{
+            listeDarticles = cm.getCatalogue();
+        } catch (BLLException e) {
+            System.out.println(e.getMessage());
+        }
+        Article articleAaffiche;
+        if(!listeDarticles.isEmpty()) {
+            articleAaffiche = listeDarticles.get(index); //J'affiche mon premier article
+            getTextReference().setText(articleAaffiche.getReference());
+            getTextDesignation().setText(articleAaffiche.getDesignation());
+            getTextMarque().setText(articleAaffiche.getMarque());
+            getTextStock().setText(String.valueOf(articleAaffiche.getQteStock()));
+            getTextPrix().setText(String.valueOf(articleAaffiche.getPrixUnitaire()));
+            if(articleAaffiche instanceof Ramette){
+                getRadioRamette().setSelected(true);
+                getcomboCouleur().setEnabled(false);
+                getCheckbox80().setEnabled(true);
+                getCheckbox100().setEnabled(true);
+                getcomboCouleur().setEnabled(false);
+            }
+            if(articleAaffiche instanceof Stylo){
+                getRadioStylo().setSelected(true);
+                getcomboCouleur().setSelectedItem(((Stylo) articleAaffiche).getCouleur());
+                getCheckbox80().setEnabled(false);
+                getCheckbox100().setEnabled(false);
+            }
+        }
     }
 
 /********************************************CREATION-JPANEL-PRINCIPAL*************************************************/
@@ -116,10 +154,6 @@ public class GUI extends JFrame {
             gbc.gridx = 1;
             gbc.gridy = 7;
             panneauPrincipal.add(getcomboCouleur(), gbc);
-
-            CatalogueManager cm = CatalogueManager.getInstance();
-            getTextDesignation(cm.getArticle(1));
-
         }
         return panneauPrincipal;
     }
@@ -173,6 +207,35 @@ public class GUI extends JFrame {
         if (boutonPrecedent==null) {
             ImageIcon icon = new ImageIcon("Image/Back24.gif");
             boutonPrecedent = new JButton(icon);
+            boutonPrecedent.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) { //méthode anonyme
+                    if(index == 0) {
+                        index = listeDarticles.size() - 1;
+                    } else {
+                        index--;
+                    }
+                    Article articleAafficher = listeDarticles.get(index);
+                    getTextReference().setText(articleAafficher.getReference());
+                    getTextDesignation().setText(articleAafficher.getDesignation());
+                    getTextMarque().setText(articleAafficher.getMarque());
+                    getTextStock().setText(String.valueOf(articleAafficher.getQteStock()));
+                    getTextPrix().setText(String.valueOf(articleAafficher.getPrixUnitaire()));
+                    if(articleAafficher instanceof Ramette){
+                        getRadioRamette().setSelected(true);
+                        getcomboCouleur().setEnabled(false);
+                        getCheckbox80().setEnabled(true);
+                        getCheckbox100().setEnabled(true);
+                        getcomboCouleur().setEnabled(false);
+                    }
+                    if(articleAafficher instanceof Stylo){
+                        getRadioStylo().setSelected(true);
+                        getcomboCouleur().setSelectedItem(((Stylo) articleAafficher).getCouleur());
+                        getCheckbox80().setEnabled(false);
+                        getCheckbox100().setEnabled(false);
+                    }
+                }
+            });
         }
         return boutonPrecedent;
     }
@@ -184,9 +247,30 @@ public class GUI extends JFrame {
             boutonSuivant.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    CatalogueManager cm = CatalogueManager.getInstance();
-                    Article article = new Ramette();
-                    cm.getArticle(article.getIdArticle());
+                    if(index == 0) {
+                        index = listeDarticles.size() + 1;
+                    } else {
+                        index++;
+                    }
+                    Article articleAafficher = listeDarticles.get(index);
+                    getTextReference().setText(articleAafficher.getReference());
+                    getTextDesignation().setText(articleAafficher.getDesignation());
+                    getTextMarque().setText(articleAafficher.getMarque());
+                    getTextStock().setText(String.valueOf(articleAafficher.getQteStock()));
+                    getTextPrix().setText(String.valueOf(articleAafficher.getPrixUnitaire()));
+                    if(articleAafficher instanceof Ramette){
+                        getRadioRamette().setSelected(true);
+                        getcomboCouleur().setEnabled(false);
+                        getCheckbox80().setEnabled(true);
+                        getCheckbox100().setEnabled(true);
+                        getcomboCouleur().setEnabled(false);
+                    }
+                    if(articleAafficher instanceof Stylo){
+                        getRadioStylo().setSelected(true);
+                        getcomboCouleur().setSelectedItem(((Stylo) articleAafficher).getCouleur());
+                        getCheckbox80().setEnabled(false);
+                        getCheckbox100().setEnabled(false);
+                    }
                 }
             });
         }

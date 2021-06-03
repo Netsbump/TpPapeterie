@@ -3,6 +3,7 @@ package fr.eni.papeterie.dal.jdbc;
 import fr.eni.papeterie.bo.Article;
 import fr.eni.papeterie.bo.Ramette;
 import fr.eni.papeterie.bo.Stylo;
+import fr.eni.papeterie.bo.Type;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -24,25 +25,44 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 
 /**********************************************METHODE-SELECT-ALL******************************************************/
     @Override
-    public List<Article> selectAll(){
-
-        List<Article> articleList = new ArrayList<>();
-
-        try (Connection connection = JdbcTools.recupConnection())
-        {
-            PreparedStatement reqPreparee = connection.prepareStatement(this.SQL_SELECT_ALL);
-
-            reqPreparee.executeQuery();
+    public List<Article> selectAll() throws DALException {
+        List<Article> articles = new ArrayList<>();
+        try (
+                Connection connection = JdbcTools.recupConnection();
+                PreparedStatement reqPreparee = connection.prepareStatement(SQL_SELECT_ALL)
+        ) {
+            ResultSet rs = reqPreparee.executeQuery();
+            while (rs.next()) {
+                Article article = null;
+                if (rs.getString("type").equals(Type.RAMETTE.toString())) {
+                    article = new Ramette(rs.getInt("idArticle"),
+                            rs.getString("marque"),
+                            rs.getString("reference"),
+                            rs.getString("designation"),
+                            rs.getFloat("prixUnitaire"),
+                            rs.getInt("qteStock"),
+                            rs.getInt("grammage"));
+                }
+                if (rs.getString("type").equals(Type.STYLO.toString())) {
+                    article = new Stylo(rs.getInt("idArticle"),
+                            rs.getString("marque"),
+                            rs.getString("reference"),
+                            rs.getString("designation"),
+                            rs.getFloat("prixUnitaire"),
+                            rs.getInt("qteStock"),
+                            rs.getString("couleur"));
+                }
+                articles.add(article);
+            }
+        } catch (SQLException e) {
+            throw new DALException(e.getMessage());
         }
-        catch (SQLException e)   {
-            System.out.println(e.getMessage());
-        }
-        return articleList;
+        return articles;
     }
 
 /**********************************************METHODE-SELECT-BY-ID****************************************************/
     @Override
-    public Article selectById(int id){
+    public Article selectById(int id) throws DALException{
 
         Article article = null;
 
@@ -79,14 +99,14 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
             reqPreparee.executeQuery();
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new DALException(e.getMessage());
         }
         return article;
     }
 
 /**********************************************METHODE-UPDATE**********************************************************/
    @Override
-    public void update(Article article){
+    public void update(Article article) throws DALException{
 
         try (Connection connection = JdbcTools.recupConnection())
         {
@@ -108,13 +128,13 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
             reqPreparee.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new DALException(e.getMessage());
         }
     }
 
 /**********************************************METHODE-INSERT**********************************************************/
     @Override
-    public void insert(Article article){
+    public void insert(Article article) throws DALException{
 
         try (Connection connection = JdbcTools.recupConnection())                                                         //ds les parenthèse du try, les paramètres existent seulement à l'intérieur du try et et donc se ferment automatiquement à la fin du try
         {                                                                                                               // cela s'appelle un try with ressources, ds ce cas précis cela ferme automatiquement la connection
@@ -146,14 +166,14 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
             }
         }
         catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new DALException(e.getMessage());
         }
 
     }
 
 /**********************************************METHODE-DELETE**********************************************************/
    @Override
-    public void delete(int id){
+    public void delete(int id) throws DALException{
 
         try (Connection connection = JdbcTools.recupConnection())
         {
@@ -162,7 +182,7 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
             reqPreparee.executeUpdate();
         }
         catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new DALException(e.getMessage());
         }
     }
 

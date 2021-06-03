@@ -1,8 +1,8 @@
 package fr.eni.papeterie.bll;
 
-public class BLLException extends Throwable {
+public class BLLException extends Exception {
 
-    public BLLException(String s) {
-        super();
+    public BLLException(String message) {
+        super(message);
     }
 }

@@ -34,28 +34,48 @@ public class CatalogueManager {
 /****************************************METHODE-POUR-AJOUTER-UN-ARTICLE***********************************************/
     public void addArticle(Article a) throws BLLException {
         validerArticle(a);
-        this.articleDAO.insert(a);
+        try {
+            this.articleDAO.insert(a);
+        } catch (DALException e) {
+            throw new BLLException(e.getMessage());
+        }
     }
 
 /****************************************METHODE-LISTER-LE-CATALOGUE***************************************************/
-    public List<Article> getCatalogue() {
-        return this.articleDAO.selectAll();
+    public List<Article> getCatalogue() throws BLLException {
+        try {
+            return this.articleDAO.selectAll();
+        } catch (DALException e) {
+            throw new BLLException(e.getMessage());
+        }
     }
 
 /****************************************METHODE-RECUPERER-ARTICLE*****************************************************/
-    public Article getArticle(int index){
-        return this.articleDAO.selectById(index);
+    public Article getArticle(int index) throws BLLException{
+        try {
+            return this.articleDAO.selectById(index);
+        } catch (DALException e) {
+            throw new BLLException(e.getMessage());
+        }
     }
 
 /****************************************METHODE-MODIFIER-ARTICLE******************************************************/
     public void updateArticle(Article a) throws BLLException {
         validerArticle(a);
-        this.articleDAO.update(a);
+        try {
+            this.articleDAO.update(a);
+        } catch (DALException e) {
+            throw new BLLException(e.getMessage());
+        }
     }
 
 /****************************************METHODE-SUPPRIMER-ARTICLE*****************************************************/
     public void removeArticle(int index) throws BLLException{
-        this.articleDAO.delete(index);
+        try {
+            this.articleDAO.delete(index);
+        } catch (DALException e) {
+            throw new BLLException(e.getMessage());
+        }
     }
 
 /****************************************METHODE-VALIDER-ARTICLE*******************************************************/

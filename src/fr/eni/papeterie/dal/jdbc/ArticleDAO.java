@@ -9,9 +9,9 @@ import java.util.List;
  */
 
 public interface ArticleDAO {
-    List<Article> selectAll();
-    void update(Article article);
-    void insert(Article article);
-    Article selectById(int id);
-    void delete(int id);
+    List<Article> selectAll() throws DALException;
+    void update(Article article) throws DALException;
+    void insert(Article article) throws DALException;
+    Article selectById(int id) throws DALException;
+    void delete(int id)throws DALException;
 }
