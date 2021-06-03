@@ -12,7 +12,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -32,7 +31,7 @@ public class GUI extends JFrame {
     private JComboBox comboCouleur;
 
     //Liste d'article pour afficher les articles stockés dans la BDD
-    List<Article> listeDarticles;
+    private List<Article> listeDarticles;
     private int index = 0;
 
 /********************************************CREATION-JFRAME***********************************************************/
@@ -49,12 +48,12 @@ public class GUI extends JFrame {
         listeDarticles = new ArrayList<>();
         CatalogueManager cm = CatalogueManager.getInstance();
         try{
-            listeDarticles = cm.getCatalogue();
+            this.listeDarticles = cm.getCatalogue();
         } catch (BLLException e) {
             System.out.println(e.getMessage());
         }
         Article articleAaffiche;
-        if(!listeDarticles.isEmpty()) {
+        if(!this.listeDarticles.isEmpty()) {
             articleAaffiche = listeDarticles.get(index); //J'affiche mon premier article
             getTextReference().setText(articleAaffiche.getReference());
             getTextDesignation().setText(articleAaffiche.getDesignation());
@@ -157,10 +156,13 @@ public class GUI extends JFrame {
         }
         return panneauPrincipal;
     }
+/**********************************************************************************************************************/
+/*****************************************  CREATION-JPANEL-SUPPLEMENTAIRES  ******************************************/
+/**********************************************************************************************************************/
+//CREATION D'UN PANEL POUR GROUPER LES BOUTONS RADIOS + UN PANNEL POUR LES BOUTONS CHECKBOX + UN PANNEL POUR REGROUPER
+//LES 5 BOUTONS (PRECENDENT,DELETE,SAVE,CLEAR ET SUIVANT)
 
-/*****************************************CREATION-JPANEL-SUPPLEMENTAIRES**********************************************/
-
-/************************************************PANEL-PANNEAU-RADIO***************************************************/
+/*********************************************** PANEL-PANNEAU-RADIO **************************************************/
         public JPanel getPanneauRadio() {
         if (panneauRadio == null) {
             panneauRadio = new JPanel();
@@ -174,7 +176,7 @@ public class GUI extends JFrame {
         return panneauRadio;
     }
 
-/************************************************PANEL-PANNEAU-CHECKBOX************************************************/
+/*********************************************** PANEL-PANNEAU-CHECKBOX ***********************************************/
     public JPanel getPanneauCheckBox(){
         if(panneauCheckBox == null){
             panneauCheckBox = new JPanel();
@@ -188,7 +190,7 @@ public class GUI extends JFrame {
         return panneauCheckBox;
     }
 
-/************************************************PANEL-PANNEAU-BOUTONS*************************************************/
+/*********************************************** PANEL-PANNEAU-BOUTONS ************************************************/
     public JPanel getPanneauBoutons(){
         if(panneauBoutons == null){
             panneauBoutons = new JPanel();
@@ -202,7 +204,12 @@ public class GUI extends JFrame {
         return panneauBoutons;
     }
 
-/******************************************************SINGLETON*******************************************************/
+/**********************************************************************************************************************/
+/****************************************************  SINGLETON  *****************************************************/
+/**********************************************************************************************************************/
+//CREATION DE TOUT LES SINGLETONS + AJOUT DES ACTIONS-EVENTS SUR LES BOUTONS
+
+/********************************************** METHODES-BOUTON-PRECEDENT *********************************************/
     public JButton getPrecedent() {
         if (boutonPrecedent==null) {
             ImageIcon icon = new ImageIcon("Image/Back24.gif");
@@ -215,7 +222,7 @@ public class GUI extends JFrame {
                     } else {
                         index--;
                     }
-                    Article articleAafficher = listeDarticles.get(index);
+                    Article articleAafficher= listeDarticles.get(index);
                     getTextReference().setText(articleAafficher.getReference());
                     getTextDesignation().setText(articleAafficher.getDesignation());
                     getTextMarque().setText(articleAafficher.getMarque());
@@ -240,6 +247,7 @@ public class GUI extends JFrame {
         return boutonPrecedent;
     }
 
+/********************************************** METHODES-BOUTON-SUIVANT ***********************************************/
     public JButton getSuivant() {
         if (boutonSuivant==null) {
             Icon icon = new ImageIcon("Image/Forward24.gif");
@@ -247,8 +255,8 @@ public class GUI extends JFrame {
             boutonSuivant.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if(index == 0) {
-                        index = listeDarticles.size() + 1;
+                    if(index >= listeDarticles.size() -1) {
+                        index = 0;
                     } else {
                         index++;
                     }
@@ -270,6 +278,7 @@ public class GUI extends JFrame {
                         getcomboCouleur().setSelectedItem(((Stylo) articleAafficher).getCouleur());
                         getCheckbox80().setEnabled(false);
                         getCheckbox100().setEnabled(false);
+                        getcomboCouleur().setSelectedItem(Couleur.valueOf(((Stylo) articleAafficher).getCouleur()));
                     }
                 }
             });
@@ -277,14 +286,30 @@ public class GUI extends JFrame {
         return boutonSuivant;
     }
 
+/********************************************** METHODES-BOUTON-DELETE ************************************************/
     public JButton getDelete() {
         if (boutonDelete==null) {
             Icon icon = new ImageIcon("Image/Delete24.gif");
             boutonDelete = new JButton(icon);
+            boutonDelete.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    CatalogueManager cm = CatalogueManager.getInstance();
+                    Article articleAafficher = listeDarticles.get(index);
+                    try {
+                        cm.removeArticle(articleAafficher.getIdArticle()); // Je le supprime en BDD
+                    } catch (BLLException bllException) {
+                        bllException.printStackTrace();
+                    }
+                    listeDarticles.remove(articleAafficher);
+                    getValider().doClick(); //Penser a changer le nom de la getValider en getNouveau
+                }
+            });
         }
         return boutonDelete;
     }
 
+/********************************************** METHODES-BOUTON-CLEAR *************************************************/
     public JButton getValider() {
         if (boutonValider==null) {
             Icon icon = new ImageIcon("Image/New24.gif");
@@ -297,12 +322,16 @@ public class GUI extends JFrame {
                     getTextMarque().setText("");
                     getTextStock().setText("");
                     getTextPrix().setText("");
+                    getCheckbox80().setEnabled(true);
+                    getCheckbox100().setEnabled(true);
+                    getcomboCouleur().setEnabled(true);
                 }
             });
         }
         return boutonValider;
     }
 
+/*********************************************** METHODES-BOUTON-SAVE *************************************************/
     public JButton getSave() {
         if (boutonSave==null) {
             Icon icon = new ImageIcon("Image/Save24.gif");
@@ -312,23 +341,36 @@ public class GUI extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     try {
                         CatalogueManager cm = CatalogueManager.getInstance();
-                        Article article = new Ramette();
-                        article.setDesignation(getTextDesignation().getText());
-                        article.setReference(getTextReference().getText());
-                        article.setMarque(getTextMarque().getText());
-                        article.setQteStock(Integer.parseInt(getTextStock().getText()));
-                        article.setPrixUnitaire(Float.parseFloat(getTextPrix().getText()));
+                        Article article = null;
+                        if(getRadioRamette().isSelected())   {  // c'est une ramette
+                            article = new Ramette(
+                            getTextDesignation().getText(),
+                            getTextReference().getText(),
+                            getTextMarque().getText(),
+                            Float.parseFloat(getTextPrix().getText()),
+                            Integer.parseInt(getTextStock().getText()),
+                            (getCheckbox80().isSelected()?80:100));
+                        }
+                        if (getRadioStylo().isSelected()) { // c'est un stylo
+                            article = new Stylo(
+                            getTextDesignation().getText(),
+                            getTextReference().getText(),
+                            getTextMarque().getText(),
+                            Float.parseFloat(getTextPrix().getText()),
+                            Integer.parseInt(getTextStock().getText()),
+                            getcomboCouleur().getSelectedItem().toString());
+                        }
                         cm.addArticle(article);
                     } catch (BLLException bllException) {
                         bllException.printStackTrace();
                     }
-
                 }
             });
         }
         return boutonSave;
     }
 
+/************************************************* AUTRES-METHODES ****************************************************/
     public JLabel getLabelReference(){
         if(labelReference == null) {
             labelReference = new JLabel("Référence ");
@@ -424,13 +466,7 @@ public class GUI extends JFrame {
     public JRadioButton getRadioRamette(){
         if(radioRamette == null) {
             radioRamette = new JRadioButton("Ramette");
-            radioRamette.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    getcomboCouleur().setEnabled(false);
-                    getCheckbox80().doClick();
-                }
-            });
+
         }
         return radioRamette;
     }
@@ -445,7 +481,6 @@ public class GUI extends JFrame {
     public JCheckBox getCheckbox80(){
         if (checkbox80 == null) {
             checkbox80 = new JCheckBox("80 grammes");
-
         }
         return checkbox80;
     }
